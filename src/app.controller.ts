@@ -10,11 +10,11 @@ interface Post {
   commentCount: number;
 }
 
-@Controller()
+@Controller('api')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
+  @Get('posts')
   getPost(): Post {
     return {
       id: '1',
