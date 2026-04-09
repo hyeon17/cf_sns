@@ -37,12 +37,16 @@ export class PostsService {
     private readonly postRepository: Repository<PostModel>,
   ) {}
 
-  getAllPosts() {
-    return posts
+  async getAllPosts() {
+    return this.postRepository.find()
   }
 
-  getPostById(id: number) {
-    const post = posts.find((post) => post.id === id)
+  async getPostById(id: number) {
+    const post = await this.postRepository.findOne({
+      where: {
+        id,
+      },
+    })
 
     if (!post) {
       throw new NotFoundException('Post not found')
