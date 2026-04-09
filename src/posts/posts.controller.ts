@@ -7,7 +7,7 @@ export class PostsController {
 
   @Get()
   getPosts() {
-    return this.postsService.getPosts()
+    return this.postsService.getAllPosts()
   }
 
   @Get(':id')
