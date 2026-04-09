@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { PostModel } from './entities/post.entity'
 
-let posts: PostModel[] = [
+const posts: PostModel[] = [
   {
     id: 1,
     author: 'Author 1',
@@ -68,8 +68,11 @@ export class PostsService {
     return newPost
   }
 
-  updatePost(id: number, author: string, title: string, content: string) {
-    const post = posts.find((post) => post.id === id)
+  async updatePost(id: number, author: string, title: string, content: string) {
+    const post = await this.postRepository.findOne({
+      where: { id },
+    })
+
     if (!post) {
       throw new NotFoundException('Post not found')
     }
@@ -84,18 +87,20 @@ export class PostsService {
       post.content = content
     }
 
-    posts = posts.map((prevPost) => (prevPost.id === id ? post : prevPost))
-    return post
+    const newPost = await this.postRepository.save(post)
+    return newPost
   }
 
-  deletePost(id: number) {
-    const post = posts.find((post) => post.id !== id)
+  async deletePost(id: number) {
+    const post = await this.postRepository.findOne({
+      where: { id },
+    })
 
     if (!post) {
       throw new NotFoundException('Post not found')
     }
 
-    posts = posts.filter((post) => post.id !== id)
+    await this.postRepository.delete(id)
     return id
   }
 }
